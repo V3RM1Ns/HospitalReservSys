@@ -1,0 +1,15 @@
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/bin/Debug/net9.0/HospitalManagmentSystem
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/bin/Debug/net9.0/HospitalManagmentSystem.deps.json
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/bin/Debug/net9.0/HospitalManagmentSystem.runtimeconfig.json
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/bin/Debug/net9.0/HospitalManagmentSystem.dll
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/bin/Debug/net9.0/HospitalManagmentSystem.pdb
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.GeneratedMSBuildEditorConfig.editorconfig
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.AssemblyInfoInputs.cache
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.AssemblyInfo.cs
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.csproj.CoreCompileInputs.cache
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.sourcelink.json
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.dll
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/refint/HospitalManagmentSystem.dll
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.pdb
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/HospitalManagmentSystem.genruntimeconfig.cache
+/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/obj/Debug/net9.0/ref/HospitalManagmentSystem.dll

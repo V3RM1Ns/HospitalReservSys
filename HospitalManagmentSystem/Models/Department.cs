@@ -2,6 +2,11 @@ namespace HospitalManagmentSystem.Models;
 
 public class Department
 {
-    public string Name { get; set; }
+    public string name { get; set; }
     public List<Doctor> Doctors { get; set; }
+
+    public Department()
+    {
+        
+    }
 }

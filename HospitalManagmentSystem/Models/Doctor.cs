@@ -1,8 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using HospitalManagmentSystem.Enums;
+
 public class Doctor : User
 {
     public int experience { get; set; }
-    public List<DateTime> reservationTimes { get; set; } = new();
     public List<ReservationResult<DateTime, bool>> reservations { get; set; } = new();
 
     public Doctor()
@@ -33,7 +36,7 @@ public class Doctor : User
             Console.Write("🕒 Enter work date and time (format: yyyy-MM-dd HH:mm) or type 'B' to go back: ");
             string input = Console.ReadLine();
 
-            if (input.ToUpper() == "B")
+            if (input.Trim().ToUpper() == "B")
                 break;
 
             try
@@ -55,9 +58,43 @@ public class Doctor : User
 
             Console.Write("➕ Add another time? (Y/N): ");
             string again = Console.ReadLine();
-            if (again.ToUpper() != "Y")
+            if (again.Trim().ToUpper() != "Y")
                 break;
         }
+    }
+
+    public void AcceptReservation(List<User> users, List<Department> departments)
+    {
+        if (reservations.Count == 0)
+        {
+            Console.WriteLine("⚠️ No reservations to accept.");
+            return;
+        }
+
+        Console.WriteLine("🏥 Select the reservation to accept:");
+        for (int i = 0; i < reservations.Count; i++)
+        {
+            var r = reservations[i];
+            string status = r.IsApproved ? "✅ Accepted" : "⏳ Pending";
+            Console.WriteLine($"{i + 1}. Time: {r.ReservationDate:dd.MM.yyyy HH:mm} - Status: {status}");
+        }
+
+        int choice;
+        while (true)
+        {
+            Console.Write("Enter choice: ");
+            string input = Console.ReadLine();
+
+            if (int.TryParse(input, out choice) && choice >= 1 && choice <= reservations.Count)
+                break;
+
+            Console.WriteLine("❌ Invalid input. Please enter a valid reservation number.");
+        }
+
+        reservations[choice - 1].IsApproved = true;
+
+        DataStorage.SaveData(users, departments);
+        Console.WriteLine("✅ Reservation accepted and saved to database.");
     }
 
     public class ReservationResult<TTime, TStatus>

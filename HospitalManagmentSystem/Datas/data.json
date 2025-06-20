@@ -8,21 +8,7 @@
       "password": "a"
     },
     {
-      "name": "Mehdi",
-      "email": "asd",
-      "phoneNumber": "asd",
-      "role": 1,
-      "password": "asd"
-    },
-    {
-      "name": "ss",
-      "email": "ss",
-      "phoneNumber": "asd",
-      "role": 1,
-      "password": "ss"
-    },
-    {
-      "name": "Niga",
+      "name": "b",
       "email": "b",
       "phoneNumber": "b",
       "role": 1,
@@ -32,28 +18,17 @@
   "Doctors": [],
   "Departments": [
     {
-      "name": "Cardio",
+      "name": "Cor",
       "doctors": [
         {
           "experience": 2,
-          "reservationTimes": [],
           "reservations": [
             {
-              "ReservationDate": "2522-12-12T11:11:00",
-              "IsApproved": false
+              "ReservationDate": "2025-06-20T20:20:00",
+              "IsApproved": true
             }
           ],
-          "name": "Mehdi",
-          "email": "asd",
-          "phoneNumber": "asd",
-          "role": 1,
-          "password": "asd"
-        },
-        {
-          "experience": 2,
-          "reservationTimes": [],
-          "reservations": [],
-          "name": "Niga",
+          "name": "b",
           "email": "b",
           "phoneNumber": "b",
           "role": 1,

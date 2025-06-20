@@ -11,7 +11,7 @@ namespace HospitalManagmentSystem
         static List<User> users;
         static List<Department> departments;
         static User currentUser = null;
-        
+
         static void Main(string[] args)
         {
             try
@@ -77,10 +77,10 @@ namespace HospitalManagmentSystem
                             MakeNewReservation();
                             break;
                         case "2":
-                         
+
                             break;
                         case "3":
-                          
+
                             break;
                         case "4":
                             AdminPanel();
@@ -240,14 +240,14 @@ namespace HospitalManagmentSystem
                     string input = Console.ReadLine();
                     if (int.TryParse(input, out k) && k >= 1 && k <= selectedDept.doctors.Count)
                     {
-                         selectedDoctor=selectedDept.doctors[k - 1];
+                        selectedDoctor = selectedDept.doctors[k - 1];
                         break;
                     }
-                    
+
 
                     Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
                 }
-                
+
                 while (true)
                 {
                     Console.Clear();
@@ -271,7 +271,7 @@ namespace HospitalManagmentSystem
                     string input = Console.ReadLine();
                     break;
                 }
-                
+
 
                 Console.ReadKey();
             }
@@ -364,109 +364,110 @@ namespace HospitalManagmentSystem
                 Console.ReadKey();
             }
         }
+
         static void AddDoctor()
-{
-    try
-    {
-        if (departments == null || departments.Count == 0)
         {
-            Console.WriteLine("No departments yet. Please be patient.");
-            Thread.Sleep(3000);
-            return;
+            try
+            {
+                if (departments == null || departments.Count == 0)
+                {
+                    Console.WriteLine("No departments yet. Please be patient.");
+                    Thread.Sleep(3000);
+                    return;
+                }
+
+                Console.Clear();
+                Console.WriteLine("🏥 Select doctor's department:");
+                for (int i = 0; i < departments.Count; i++)
+                    Console.WriteLine($"{i + 1}. {departments[i].name}");
+
+                int deptChoice;
+                while (true)
+                {
+                    Console.Write("Enter choice: ");
+                    string input = Console.ReadLine();
+                    if (int.TryParse(input, out deptChoice) && deptChoice >= 1 && deptChoice <= departments.Count)
+                        break;
+
+                    Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
+                }
+
+                Department selectedDept = departments[deptChoice - 1];
+                Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
+
+                Console.Write("Enter the doctor name: ");
+                string doctorName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(doctorName))
+                {
+                    Console.WriteLine("⚠️ Doctor name cannot be empty. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.Write("Enter doctor's email: ");
+                string email = Console.ReadLine();
+                if (users.Any(u => u.email == email))
+                {
+                    Console.WriteLine("⚠️ Email already exists. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.Write("Enter password for doctor: ");
+                string password = Console.ReadLine();
+
+                Console.Write("Enter doctor's phone number: ");
+                string phone = Console.ReadLine();
+
+                Console.Write("Enter doctor's experience (in years): ");
+                if (!int.TryParse(Console.ReadLine(), out int doctorExperience))
+                {
+                    Console.WriteLine("❌ Invalid experience input. Must be a number. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Doctor doctor = new Doctor
+                {
+                    name = doctorName,
+                    email = email,
+                    password = password,
+                    phoneNumber = phone,
+                    experience = doctorExperience
+                };
+
+                if (selectedDept.doctors == null)
+                    selectedDept.doctors = new List<Doctor>();
+
+                selectedDept.doctors.Add(doctor);
+
+                users.Add(doctor);
+
+                DataStorage.SaveData(users, departments);
+
+                Console.WriteLine("✅ Doctor added successfully. Press any key...");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error adding doctor: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
-        Console.Clear();
-        Console.WriteLine("🏥 Select doctor's department:");
-        for (int i = 0; i < departments.Count; i++)
-            Console.WriteLine($"{i + 1}. {departments[i].name}");
-
-        int deptChoice;
-        while (true)
-        {
-            Console.Write("Enter choice: ");
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out deptChoice) && deptChoice >= 1 && deptChoice <= departments.Count)
-                break;
-
-            Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
-        }
-
-        Department selectedDept = departments[deptChoice - 1];
-        Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
-
-        Console.Write("Enter the doctor name: ");
-        string doctorName = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(doctorName))
-        {
-            Console.WriteLine("⚠️ Doctor name cannot be empty. Press any key...");
-            Console.ReadKey();
-            return;
-        }
-
-        Console.Write("Enter doctor's email: ");
-        string email = Console.ReadLine();
-        if (users.Any(u => u.email == email))
-        {
-            Console.WriteLine("⚠️ Email already exists. Press any key...");
-            Console.ReadKey();
-            return;
-        }
-
-        Console.Write("Enter password for doctor: ");
-        string password = Console.ReadLine();
-
-        Console.Write("Enter doctor's phone number: ");
-        string phone = Console.ReadLine();
-
-        Console.Write("Enter doctor's experience (in years): ");
-        if (!int.TryParse(Console.ReadLine(), out int doctorExperience))
-        {
-            Console.WriteLine("❌ Invalid experience input. Must be a number. Press any key...");
-            Console.ReadKey();
-            return;
-        }
-        
-        Doctor doctor = new Doctor
-        {
-            name = doctorName,
-            email = email,
-            password = password,
-            phoneNumber = phone,
-            experience = doctorExperience
-        };
-        
-        if (selectedDept.doctors == null)
-            selectedDept.doctors = new List<Doctor>();
-
-        selectedDept.doctors.Add(doctor);
-        
-        users.Add(doctor);
-        
-        DataStorage.SaveData(users, departments);
-
-        Console.WriteLine("✅ Doctor added successfully. Press any key...");
-        Console.ReadKey();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ Error adding doctor: {ex.Message}");
-        Console.ReadKey();
-    }
-}
 
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
         static void DoctorPanel()
         {
             if (currentUser.role == RolePanel.Patient)
@@ -497,13 +498,14 @@ namespace HospitalManagmentSystem
                             ShowReservs();
                             break;
                         case "2":
-                           
+
                             break;
                         case "3":
-                            Managework();
+                            Accept();
                             break;
+
                         case "4":
-                           
+                            Managework();
                             break;
                         case "5":
                             Console.WriteLine("🔙 Returning... Press any key to continue.");
@@ -519,16 +521,46 @@ namespace HospitalManagmentSystem
             }
         }
 
+        public static void Accept()
+        {
+            Doctor currentDoctor = null;
+
+            if (currentUser is Doctor doc)
+            {
+                currentDoctor = doc;
+            }
+            else
+            {
+                currentDoctor = departments
+                    .SelectMany(d => d.doctors)
+                    .FirstOrDefault(d => d.name.Equals(currentUser.name, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (currentDoctor == null)
+            {
+                Console.WriteLine("⛔ Doctor not found.");
+                Console.ReadKey();
+                return;
+            }
+
+            currentDoctor.AcceptReservation(users, departments);
+            Console.WriteLine("✅ Reservation updated successfully.");
+            Console.ReadKey();
+        }
+
+
+
         public static void Managework()
         {
-            Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
+            Doctor currentDoctor =
+                departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
             currentDoctor.ManageWork();
             DataStorage.SaveData(users, departments);
         }
 
         public static void ShowReservs()
         {
-      
+
             if (currentUser is Doctor doctor)
             {
                 doctor.ShowReservations();
@@ -552,8 +584,5 @@ namespace HospitalManagmentSystem
             Console.ReadKey();
         }
 
-        
-        
-        
     }
 }

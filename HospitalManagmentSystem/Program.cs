@@ -1,4 +1,8 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
 
 namespace HospitalManagmentSystem
 {
@@ -7,7 +11,7 @@ namespace HospitalManagmentSystem
         static List<User> users;
         static List<Department> departments;
         static User currentUser = null;
-
+        
         static void Main(string[] args)
         {
             try
@@ -63,7 +67,7 @@ namespace HospitalManagmentSystem
                     Console.WriteLine("4. Admin Panel");
                     Console.WriteLine("5. Doctor Panel");
                     Console.WriteLine("6. Logout");
-                    Console.Write("Please enter your choice (1-5): ");
+                    Console.Write("Please enter your choice (1-6): ");
 
                     string choice = Console.ReadLine();
 
@@ -73,10 +77,10 @@ namespace HospitalManagmentSystem
                             MakeNewReservation();
                             break;
                         case "2":
-                            MyExistingReservations();
+                         
                             break;
                         case "3":
-                            CancelOrModifyReservation();
+                          
                             break;
                         case "4":
                             AdminPanel();
@@ -98,8 +102,6 @@ namespace HospitalManagmentSystem
                 }
             }
         }
-
-
 
         static void Login()
         {
@@ -187,7 +189,6 @@ namespace HospitalManagmentSystem
             Console.ReadKey();
         }
 
-
         static void MakeNewReservation()
         {
             try
@@ -270,13 +271,7 @@ namespace HospitalManagmentSystem
                     string input = Console.ReadLine();
                     break;
                 }
-
-
-
-
-
-
-
+                
 
                 Console.ReadKey();
             }
@@ -285,38 +280,6 @@ namespace HospitalManagmentSystem
                 Console.WriteLine($"❌ Error making reservation: {ex.Message}");
                 Console.ReadKey();
             }
-        }
-
-        static void MyExistingReservations()
-        {
-            try
-            {
-                Console.Clear();
-                Console.WriteLine("📋 === Your Reservations ===");
-                // Here you can add code to show actual reservations of currentUser
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error showing reservations: {ex.Message}");
-            }
-
-            Console.ReadKey();
-        }
-
-        static void CancelOrModifyReservation()
-        {
-            try
-            {
-                Console.Clear();
-                Console.WriteLine("🗑️ === Cancel or Modify Reservation ===");
-                Console.WriteLine("🔧 Feature under development...");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error in cancel/modify: {ex.Message}");
-            }
-
-            Console.ReadKey();
         }
 
         static void AdminPanel()
@@ -391,17 +354,8 @@ namespace HospitalManagmentSystem
                 }
 
                 departments.Add(new Department { name = departmentName });
-
-                try
-                {
-                    DataStorage.SaveData(users, departments);
-                    Console.WriteLine("✅ Department added successfully. Press any key...");
-                }
-                catch (Exception saveEx)
-                {
-                    Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
-                }
-
+                DataStorage.SaveData(users, departments);
+                Console.WriteLine("✅ Department added successfully. Press any key...");
                 Console.ReadKey();
             }
             catch (Exception ex)
@@ -410,12 +364,11 @@ namespace HospitalManagmentSystem
                 Console.ReadKey();
             }
         }
-
         static void AddDoctor()
         {
             try
             {
-                if (departments.Count == 0)
+                if (departments == null || departments.Count == 0)
                 {
                     Console.WriteLine("No departments yet. Please be patient.");
                     Thread.Sleep(3000);
@@ -425,19 +378,15 @@ namespace HospitalManagmentSystem
                 Console.Clear();
                 Console.WriteLine("🏥 Select doctor's department:");
                 for (int i = 0; i < departments.Count; i++)
-                {
                     Console.WriteLine($"{i + 1}. {departments[i].name}");
-                }
 
-                int deptChoice = 0;
+                int deptChoice;
                 while (true)
                 {
                     Console.Write("Enter choice: ");
                     string input = Console.ReadLine();
                     if (int.TryParse(input, out deptChoice) && deptChoice >= 1 && deptChoice <= departments.Count)
-                    {
                         break;
-                    }
 
                     Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
                 }
@@ -463,9 +412,7 @@ namespace HospitalManagmentSystem
                 }
 
                 if (selectedDept.doctors == null)
-                {
                     selectedDept.doctors = new List<Doctor>();
-                }
 
                 Doctor doctor = new Doctor
                 {
@@ -474,18 +421,8 @@ namespace HospitalManagmentSystem
                 };
 
                 selectedDept.doctors.Add(doctor);
-
-
-                try
-                {
-                    DataStorage.SaveData(users, departments);
-                    Console.WriteLine("✅ Doctor added successfully. Press any key...");
-                }
-                catch (Exception saveEx)
-                {
-                    Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
-                }
-
+                DataStorage.SaveData(users, departments);
+                Console.WriteLine("✅ Doctor added successfully. Press any key...");
                 Console.ReadKey();
             }
             catch (Exception ex)
@@ -495,44 +432,55 @@ namespace HospitalManagmentSystem
             }
         }
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         static void DoctorPanel()
         {
             if (currentUser.role == RolePanel.Patient)
             {
-                Console.WriteLine("You Can not access this panel.");
+                Console.WriteLine("You can not access this panel.");
+                Console.ReadKey();
                 return;
             }
 
-            if (currentUser.role == RolePanel.Doctor || currentUser.role == RolePanel.Admin)
+            if (currentUser.role == RolePanel.Admin)
             {
                 bool exit = false;
                 while (!exit)
                 {
                     Console.Clear();
                     Console.WriteLine("=== Hospital Doctor System ===");
-                    Console.WriteLine("1. Show current Reservations.");
-                    Console.WriteLine("2. Show patient details.");
+                    Console.WriteLine("1. Show current Reservations");
+                    Console.WriteLine("2. Show patient details");
                     Console.WriteLine("3. Reservation Acceptance");
-                    Console.WriteLine("4. Manage work time.");
+                    Console.WriteLine("4. Manage work time");
                     Console.WriteLine("5. Logout");
                     Console.Write("Please enter your choice (1-5): ");
                     string choice = Console.ReadLine();
 
-
-
                     switch (choice)
                     {
                         case "1":
-                            ShowReservs();
+                            
                             break;
                         case "2":
-                            ShowPatient();
+                           
                             break;
                         case "3":
-                            ReservAcept();
+                            Managework();
                             break;
                         case "4":
-                            ManageWork();
+                           
                             break;
                         case "5":
                             Console.WriteLine("🔙 Returning... Press any key to continue.");
@@ -545,32 +493,18 @@ namespace HospitalManagmentSystem
                             break;
                     }
                 }
-
             }
-
-            static void ShowReservs()
-            {
-                Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
-                currentDoctor.ShowReservations();
-            }
-
-            static void ShowPatient()
-            {
-                
-            }
-
-            static void ReservAcept()
-            {
-                
-            }
-
-            static void ManageWork()
-            {
-                Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
-                currentDoctor.ManageWork();
-                DataStorage.SaveData(users, departments);
-            }
-
         }
+
+        public static void Managework()
+        {
+            Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
+            currentDoctor.ManageWork();
+            DataStorage.SaveData(users, departments);
+        }
+        
+        
+        
+        
     }
 }

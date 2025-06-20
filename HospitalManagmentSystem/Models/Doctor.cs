@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace HospitalManagmentSystem.Models
 {
-    public class Doctor
+    public class Doctor: User
     {
         public string name { get; set; }
         public int experience { get; set; }
@@ -47,11 +47,6 @@ namespace HospitalManagmentSystem.Models
                 {
                     DateTime workTime = DateTime.ParseExact(input, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
-                    if (reservations == null)
-                    {
-                        reservations = new List<ReservationResult<DateTime, bool>>();
-                    }
-
                     reservations.Add(new ReservationResult<DateTime, bool>
                     {
                         ReservationDate = workTime,
@@ -69,15 +64,6 @@ namespace HospitalManagmentSystem.Models
                 string again = Console.ReadLine();
                 if (again.ToUpper() != "Y")
                     break;
-            }
-
-            try
-            {
-                Console.WriteLine("💾 Work time saved.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error saving work time: {ex.Message}");
             }
 
             Console.WriteLine("🔙 Press any key to return...");

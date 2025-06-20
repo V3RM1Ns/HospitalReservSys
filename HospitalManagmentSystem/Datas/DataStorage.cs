@@ -25,7 +25,7 @@ public class DataStorage
         var data = new DataModel
         {
             Users = users,
-            Departments = departments
+            Departments = departments,
         };
 
         var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
@@ -39,5 +39,6 @@ public class DataStorage
 public class DataModel
 {
     public List<User> Users { get; set; } = new();
+    public List<Doctor> Doctors { get; set; } = new();
     public List<Department> Departments { get; set; } = new();
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Globalization;
 
 namespace HospitalManagmentSystem
 {
@@ -63,7 +61,8 @@ namespace HospitalManagmentSystem
                     Console.WriteLine("2. My existing reservations");
                     Console.WriteLine("3. Cancel or modify a reservation");
                     Console.WriteLine("4. Admin Panel");
-                    Console.WriteLine("5. Logout");
+                    Console.WriteLine("5. Doctor Panel");
+                    Console.WriteLine("6. Logout");
                     Console.Write("Please enter your choice (1-5): ");
 
                     string choice = Console.ReadLine();
@@ -83,6 +82,9 @@ namespace HospitalManagmentSystem
                             AdminPanel();
                             break;
                         case "5":
+                            DoctorPanel();
+                            break;
+                        case "6":
                             Console.WriteLine("🔓 Logging out... Press any key to continue.");
                             Console.ReadKey();
                             currentUser = null;
@@ -96,6 +98,8 @@ namespace HospitalManagmentSystem
                 }
             }
         }
+
+
 
         static void Login()
         {
@@ -124,6 +128,7 @@ namespace HospitalManagmentSystem
             {
                 Console.WriteLine($"❌ Error during login: {ex.Message}");
             }
+
             Console.ReadKey();
         }
 
@@ -178,8 +183,10 @@ namespace HospitalManagmentSystem
             {
                 Console.WriteLine($"❌ Error during registration: {ex.Message}");
             }
+
             Console.ReadKey();
         }
+
 
         static void MakeNewReservation()
         {
@@ -210,12 +217,67 @@ namespace HospitalManagmentSystem
                     {
                         break;
                     }
+
                     Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
                 }
 
                 Department selectedDept = departments[deptChoice - 1];
                 Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
                 Console.WriteLine("🔄 Press any key to continue...");
+                Console.Write("Please select a Doctor.");
+                int z = 1;
+                foreach (var Doctor in selectedDept.doctors)
+                {
+                    Console.WriteLine($"\n{z}. Name:{Doctor.name}, Experience:{Doctor.experience} years.");
+                }
+
+                Doctor selectedDoctor;
+                int k = 0;
+                while (true)
+                {
+                    Console.Write("Enter choice: ");
+                    string input = Console.ReadLine();
+                    if (int.TryParse(input, out k) && k >= 1 && k <= selectedDept.doctors.Count)
+                    {
+                         selectedDoctor=selectedDept.doctors[k - 1];
+                        break;
+                    }
+                    
+
+                    Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
+                }
+                
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Doctor {selectedDoctor.name}'s Work times are:");
+
+                    if (selectedDoctor.reservations == null || selectedDoctor.reservations.Count == 0)
+                    {
+                        Console.WriteLine("⛔ No reservations yet.");
+                    }
+                    else
+                    {
+                        int i = 1;
+                        foreach (var res in selectedDoctor.reservations)
+                        {
+                            string status = res.IsApproved ? "✅ Approved" : "⏳ Pending";
+                            Console.WriteLine($"{i++}. {res.ReservationDate:dd.MM.yyyy HH:mm} — {status}");
+                        }
+                    }
+
+                    Console.WriteLine("\nPress any key to continue...");
+                    string input = Console.ReadLine();
+                    break;
+                }
+
+
+
+
+
+
+
+
                 Console.ReadKey();
             }
             catch (Exception ex)
@@ -237,6 +299,7 @@ namespace HospitalManagmentSystem
             {
                 Console.WriteLine($"❌ Error showing reservations: {ex.Message}");
             }
+
             Console.ReadKey();
         }
 
@@ -252,6 +315,7 @@ namespace HospitalManagmentSystem
             {
                 Console.WriteLine($"❌ Error in cancel/modify: {ex.Message}");
             }
+
             Console.ReadKey();
         }
 
@@ -260,7 +324,7 @@ namespace HospitalManagmentSystem
             try
             {
                 Console.Clear();
-                if (currentUser.role != RolePanel.Patient)
+                if (currentUser.role != RolePanel.Admin)
                 {
                     Console.WriteLine("Only Admin can access this.");
                     Console.ReadKey();
@@ -271,7 +335,6 @@ namespace HospitalManagmentSystem
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine($"👤 Logged in : {currentUser.name}  as 🧩 ({currentUser.role})");
                     Console.WriteLine("🛠️ === Admin Panel ===");
                     Console.WriteLine("1. Make a new Department");
                     Console.WriteLine("2. Add Doctor");
@@ -338,6 +401,7 @@ namespace HospitalManagmentSystem
                 {
                     Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
                 }
+
                 Console.ReadKey();
             }
             catch (Exception ex)
@@ -357,6 +421,7 @@ namespace HospitalManagmentSystem
                     Thread.Sleep(3000);
                     return;
                 }
+
                 Console.Clear();
                 Console.WriteLine("🏥 Select doctor's department:");
                 for (int i = 0; i < departments.Count; i++)
@@ -373,6 +438,7 @@ namespace HospitalManagmentSystem
                     {
                         break;
                     }
+
                     Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
                 }
 
@@ -396,8 +462,19 @@ namespace HospitalManagmentSystem
                     return;
                 }
 
-                Doctor doctor = new Doctor { name = doctorName, experience = doctorExperience };
+                if (selectedDept.doctors == null)
+                {
+                    selectedDept.doctors = new List<Doctor>();
+                }
+
+                Doctor doctor = new Doctor
+                {
+                    name = doctorName,
+                    experience = doctorExperience,
+                };
+
                 selectedDept.doctors.Add(doctor);
+
 
                 try
                 {
@@ -408,6 +485,7 @@ namespace HospitalManagmentSystem
                 {
                     Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
                 }
+
                 Console.ReadKey();
             }
             catch (Exception ex)
@@ -415,6 +493,84 @@ namespace HospitalManagmentSystem
                 Console.WriteLine($"❌ Error adding doctor: {ex.Message}");
                 Console.ReadKey();
             }
+        }
+
+        static void DoctorPanel()
+        {
+            if (currentUser.role == RolePanel.Patient)
+            {
+                Console.WriteLine("You Can not access this panel.");
+                return;
+            }
+
+            if (currentUser.role == RolePanel.Doctor || currentUser.role == RolePanel.Admin)
+            {
+                bool exit = false;
+                while (!exit)
+                {
+                    Console.Clear();
+                    Console.WriteLine("=== Hospital Doctor System ===");
+                    Console.WriteLine("1. Show current Reservations.");
+                    Console.WriteLine("2. Show patient details.");
+                    Console.WriteLine("3. Reservation Acceptance");
+                    Console.WriteLine("4. Manage work time.");
+                    Console.WriteLine("5. Logout");
+                    Console.Write("Please enter your choice (1-5): ");
+                    string choice = Console.ReadLine();
+
+
+
+                    switch (choice)
+                    {
+                        case "1":
+                            ShowReservs();
+                            break;
+                        case "2":
+                            ShowPatient();
+                            break;
+                        case "3":
+                            ReservAcept();
+                            break;
+                        case "4":
+                            ManageWork();
+                            break;
+                        case "5":
+                            Console.WriteLine("🔙 Returning... Press any key to continue.");
+                            Console.ReadKey();
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("❌ Invalid choice. Press any key to try again.");
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+
+            }
+
+            static void ShowReservs()
+            {
+                Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
+                currentDoctor.ShowReservations();
+            }
+
+            static void ShowPatient()
+            {
+                
+            }
+
+            static void ReservAcept()
+            {
+                
+            }
+
+            static void ManageWork()
+            {
+                Doctor currentDoctor = departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
+                currentDoctor.ManageWork();
+                DataStorage.SaveData(users, departments);
+            }
+
         }
     }
 }

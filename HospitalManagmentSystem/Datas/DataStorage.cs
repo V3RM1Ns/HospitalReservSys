@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
-
 public class DataStorage
 {
     public static string FilePath = "/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/Datas/data.json";

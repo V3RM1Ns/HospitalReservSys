@@ -1,0 +1,48 @@
+{
+  "Users": [
+    {
+      "name": "a",
+      "email": "a",
+      "phoneNumber": "055-246-76-13",
+      "role": 0,
+      "password": "a"
+    },
+    {
+      "name": "",
+      "email": "",
+      "phoneNumber": "",
+      "role": 2,
+      "password": ""
+    },
+    {
+      "name": "b",
+      "email": "b",
+      "phoneNumber": "b",
+      "role": 2,
+      "password": "b"
+    }
+  ],
+  "Departments": [
+    {
+      "name": "Cardiologs",
+      "doctors": [
+        {
+          "name": "a",
+          "experience": 2,
+          "reservationTimes": null,
+          "role": 1,
+          "reservations": [
+            {
+              "ReservationDate": "2025-06-20T20:20:00",
+              "IsApproved": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cor",
+      "doctors": null
+    }
+  ]
+}

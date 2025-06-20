@@ -1,6 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Collections.Generic;
+
 public class DataStorage
 {
     public static string FilePath = "/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/Datas/data.json";
@@ -11,11 +13,16 @@ public class DataStorage
             return (new List<User>(), new List<Department>());
 
         var json = File.ReadAllText(FilePath);
+
+        if (string.IsNullOrWhiteSpace(json))
+            return (new List<User>(), new List<Department>());
+
         var data = JsonSerializer.Deserialize<DataModel>(json, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         });
-        return (data.Users ?? new List<User>(), data.Departments ?? new List<Department>());
+
+        return (data?.Users ?? new List<User>(), data?.Departments ?? new List<Department>());
     }
 
     public static void SaveData(List<User> users, List<Department> departments)

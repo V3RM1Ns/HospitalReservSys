@@ -6,12 +6,23 @@ namespace HospitalManagmentSystem
 {
     class Program
     {
-        static List<User> users = new();
+        static List<User> users;
+        static List<Department> departments;
         static User currentUser = null;
-        static List<Department> departments = new();
 
         static void Main(string[] args)
         {
+            try
+            {
+                (users, departments) = DataStorage.LoadData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error loading data: {ex.Message}");
+                users = new List<User>();
+                departments = new List<Department>();
+            }
+
             while (true)
             {
                 while (currentUser == null)
@@ -88,164 +99,226 @@ namespace HospitalManagmentSystem
 
         static void Login()
         {
-            Console.Clear();
-            Console.WriteLine("🔐 === Login ===");
-            Console.Write("Email: ");
-            string email = Console.ReadLine();
-
-            Console.Write("Password: ");
-            string password = Console.ReadLine();
-
-            var foundUser = users.Find(x => x.email == email && x.password == password);
-            if (foundUser != null)
+            try
             {
-                currentUser = foundUser;
-                Console.WriteLine("✅ Successfully logged in. Press any key to continue...");
-            }
-            else
-            {
-                Console.WriteLine("❌ Invalid credentials. Press any key to try again...");
-            }
+                Console.Clear();
+                Console.WriteLine("🔐 === Login ===");
+                Console.Write("Email: ");
+                string email = Console.ReadLine();
 
+                Console.Write("Password: ");
+                string password = Console.ReadLine();
+
+                var foundUser = users.Find(x => x.email == email && x.password == password);
+                if (foundUser != null)
+                {
+                    currentUser = foundUser;
+                    Console.WriteLine("✅ Successfully logged in. Press any key to continue...");
+                }
+                else
+                {
+                    Console.WriteLine("❌ Invalid credentials. Press any key to try again...");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error during login: {ex.Message}");
+            }
             Console.ReadKey();
         }
 
         static void Register()
         {
-            Console.Clear();
-            Console.WriteLine("📝 === Register ===");
-
-            Console.Write("Enter Your Name: ");
-            string username = Console.ReadLine();
-
-            Console.Write("Enter your Phone: ");
-            string phone = Console.ReadLine();
-
-            Console.Write("Enter your Email: ");
-            string email = Console.ReadLine();
-
-            if (users.Exists(x => x.email == email))
+            try
             {
-                Console.WriteLine("⚠️ Email already exists. Press any key...");
-                Console.ReadKey();
-                return;
+                Console.Clear();
+                Console.WriteLine("📝 === Register ===");
+
+                Console.Write("Enter Your Name: ");
+                string username = Console.ReadLine();
+
+                Console.Write("Enter your Phone: ");
+                string phone = Console.ReadLine();
+
+                Console.Write("Enter your Email: ");
+                string email = Console.ReadLine();
+
+                if (users.Exists(x => x.email == email))
+                {
+                    Console.WriteLine("⚠️ Email already exists. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.Write("Choose a password: ");
+                string password = Console.ReadLine();
+
+                User newUser = new User
+                {
+                    name = username,
+                    email = email,
+                    phoneNumber = phone,
+                    password = password,
+                    role = RolePanel.Patient
+                };
+
+                users.Add(newUser);
+
+                try
+                {
+                    DataStorage.SaveData(users, departments);
+                    Console.WriteLine("✅ Registration successful! You can now login. Press any key...");
+                }
+                catch (Exception saveEx)
+                {
+                    Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
+                }
             }
-
-            Console.Write("Choose a password: ");
-            string password = Console.ReadLine();
-
-            User newUser = new User
+            catch (Exception ex)
             {
-                name = username,
-                email = email,
-                phoneNumber = phone,
-                password = password,
-                role = RolePanel.Patient
-            };
-
-            users.Add(newUser);
-            Console.WriteLine("✅ Registration successful! You can now login. Press any key...");
+                Console.WriteLine($"❌ Error during registration: {ex.Message}");
+            }
             Console.ReadKey();
         }
 
         static void MakeNewReservation()
         {
-            Console.Clear();
-            Console.WriteLine("📅 === New Reservation ===");
-
-            if (departments.Count == 0)
+            try
             {
-                Console.WriteLine("⚠️ No departments yet. Please be patient.");
-                Thread.Sleep(3000);
-                return;
-            }
+                Console.Clear();
+                Console.WriteLine("📅 === New Reservation ===");
 
-            Console.WriteLine("🏥 Select a department:");
-            for (int i = 0; i < departments.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {departments[i].name}");
-            }
-
-            int deptChoice = 0;
-            while (true)
-            {
-                Console.Write("Enter choice: ");
-                string input = Console.ReadLine();
-                if (int.TryParse(input, out deptChoice) && deptChoice >= 1 && deptChoice <= departments.Count)
+                if (departments.Count == 0)
                 {
-                    break;
+                    Console.WriteLine("⚠️ No departments yet. Please be patient.");
+                    Thread.Sleep(3000);
+                    return;
                 }
-                Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
-            }
 
-            Department selectedDept = departments[deptChoice - 1];
-            Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
-            Console.WriteLine("🔄 Press any key to continue...");
-            Console.ReadKey();
+                Console.WriteLine("🏥 Select a department:");
+                for (int i = 0; i < departments.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {departments[i].name}");
+                }
+
+                int deptChoice = 0;
+                while (true)
+                {
+                    Console.Write("Enter choice: ");
+                    string input = Console.ReadLine();
+                    if (int.TryParse(input, out deptChoice) && deptChoice >= 1 && deptChoice <= departments.Count)
+                    {
+                        break;
+                    }
+                    Console.WriteLine("❌ Invalid input. Please enter a number from the list.");
+                }
+
+                Department selectedDept = departments[deptChoice - 1];
+                Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
+                Console.WriteLine("🔄 Press any key to continue...");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error making reservation: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         static void MyExistingReservations()
         {
-            Console.Clear();
-            Console.WriteLine("📋 === Your Reservations ===");
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("📋 === Your Reservations ===");
+                // Here you can add code to show actual reservations of currentUser
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error showing reservations: {ex.Message}");
+            }
             Console.ReadKey();
         }
 
         static void CancelOrModifyReservation()
         {
-            Console.Clear();
-            Console.WriteLine("🗑️ === Cancel or Modify Reservation ===");
-            Console.WriteLine("🔧 Feature under development...");
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("🗑️ === Cancel or Modify Reservation ===");
+                Console.WriteLine("🔧 Feature under development...");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in cancel/modify: {ex.Message}");
+            }
             Console.ReadKey();
         }
 
         static void AdminPanel()
         {
-            Console.Clear();
-            if (currentUser.role != RolePanel.Patient)
-            {
-                Console.WriteLine("Only Admin can access this.");
-                return;
-            }
-
-            bool exit = false;
-            while (!exit)
+            try
             {
                 Console.Clear();
-                Console.WriteLine($"👤 Logged in : {currentUser.name}  as 🧩 ({currentUser.role})");
-                Console.WriteLine("🛠️ === Admin Panel ===");
-                Console.WriteLine("1. Make a new Department");
-                Console.WriteLine("2. Add Doctor");
-                Console.WriteLine("3. Back");
-                Console.Write("Please enter your choice (1-3): ");
-                string choice = Console.ReadLine();
-                switch (choice)
+                if (currentUser.role != RolePanel.Patient)
                 {
-                    case "1":
-                        AddDepartment();
-                        break;
-                    case "2":
-                        AddDoctor();
-                        break;
-                    case "3":
-                        Console.WriteLine("🔙 Returning... Press any key to continue.");
-                        Console.ReadKey();
-                        exit = true;
-                        break;
-                    default:
-                        Console.WriteLine("❌ Invalid choice. Press any key to try again.");
-                        Console.ReadKey();
-                        break;
+                    Console.WriteLine("Only Admin can access this.");
+                    Console.ReadKey();
+                    return;
                 }
 
+                bool exit = false;
+                while (!exit)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"👤 Logged in : {currentUser.name}  as 🧩 ({currentUser.role})");
+                    Console.WriteLine("🛠️ === Admin Panel ===");
+                    Console.WriteLine("1. Make a new Department");
+                    Console.WriteLine("2. Add Doctor");
+                    Console.WriteLine("3. Back");
+                    Console.Write("Please enter your choice (1-3): ");
+                    string choice = Console.ReadLine();
+                    switch (choice)
+                    {
+                        case "1":
+                            AddDepartment();
+                            break;
+                        case "2":
+                            AddDoctor();
+                            break;
+                        case "3":
+                            Console.WriteLine("🔙 Returning... Press any key to continue.");
+                            Console.ReadKey();
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("❌ Invalid choice. Press any key to try again.");
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error in Admin Panel: {ex.Message}");
                 Console.ReadKey();
             }
+        }
 
-            static void AddDepartment()
+        static void AddDepartment()
+        {
+            try
             {
                 Console.Clear();
                 Console.Write("Enter the department name: ");
                 string departmentName = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(departmentName))
+                {
+                    Console.WriteLine("⚠️ Department name cannot be empty. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
 
                 if (departments.Exists(d => d.name.Equals(departmentName, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -255,11 +328,28 @@ namespace HospitalManagmentSystem
                 }
 
                 departments.Add(new Department { name = departmentName });
-                Console.WriteLine("✅ Department added successfully. Press any key...");
+
+                try
+                {
+                    DataStorage.SaveData(users, departments);
+                    Console.WriteLine("✅ Department added successfully. Press any key...");
+                }
+                catch (Exception saveEx)
+                {
+                    Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
+                }
                 Console.ReadKey();
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error adding department: {ex.Message}");
+                Console.ReadKey();
+            }
+        }
 
-            static void AddDoctor()
+        static void AddDoctor()
+        {
+            try
             {
                 if (departments.Count == 0)
                 {
@@ -288,17 +378,43 @@ namespace HospitalManagmentSystem
 
                 Department selectedDept = departments[deptChoice - 1];
                 Console.WriteLine($"\n✅ Department selected: {selectedDept.name}");
-                
-                
-                Console.WriteLine("Enter the doctor name: ");
+
+                Console.Write("Enter the doctor name: ");
                 string doctorName = Console.ReadLine();
-                Console.WriteLine("Enter doctor's experience: ");
-                int doctorExperience = int.Parse(Console.ReadLine());
-                
+                if (string.IsNullOrWhiteSpace(doctorName))
+                {
+                    Console.WriteLine("⚠️ Doctor name cannot be empty. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.Write("Enter doctor's experience: ");
+                if (!int.TryParse(Console.ReadLine(), out int doctorExperience))
+                {
+                    Console.WriteLine("❌ Invalid experience input. Must be a number. Press any key...");
+                    Console.ReadKey();
+                    return;
+                }
+
                 Doctor doctor = new Doctor { name = doctorName, experience = doctorExperience };
-                
+                selectedDept.doctors.Add(doctor);
+
+                try
+                {
+                    DataStorage.SaveData(users, departments);
+                    Console.WriteLine("✅ Doctor added successfully. Press any key...");
+                }
+                catch (Exception saveEx)
+                {
+                    Console.WriteLine($"❌ Error saving data: {saveEx.Message}");
+                }
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error adding doctor: {ex.Message}");
+                Console.ReadKey();
             }
         }
     }
-    
 }

@@ -10,7 +10,7 @@ namespace HospitalManagmentSystem
     {
         static List<User> users;
         static List<Department> departments;
-        static User currentUser = null;
+        static User _currentUserService = null;
 
         static void Main(string[] args)
         {
@@ -27,7 +27,7 @@ namespace HospitalManagmentSystem
 
             while (true)
             {
-                while (currentUser == null)
+                while (_currentUserService == null)
                 {
                     Console.Clear();
                     Console.WriteLine("=== Welcome to Hospital Reservation System ===");
@@ -59,7 +59,7 @@ namespace HospitalManagmentSystem
                 while (!exit)
                 {
                     Console.Clear();
-                    Console.WriteLine($"👤 Logged in : {currentUser.name} as 🧩 ({currentUser.role})");
+                    Console.WriteLine($"👤 Logged in : {_currentUserService.name} as 🧩 ({_currentUserService.role})");
                     Console.WriteLine("=== Hospital Reservation System ===");
                     Console.WriteLine("1. Make a new reservation");
                     Console.WriteLine("2. My existing reservations");
@@ -91,7 +91,7 @@ namespace HospitalManagmentSystem
                         case "6":
                             Console.WriteLine("🔓 Logging out... Press any key to continue.");
                             Console.ReadKey();
-                            currentUser = null;
+                            _currentUserService = null;
                             exit = true;
                             break;
                         default:
@@ -118,7 +118,7 @@ namespace HospitalManagmentSystem
                 var foundUser = users.Find(x => x.email == email && x.password == password);
                 if (foundUser != null)
                 {
-                    currentUser = foundUser;
+                    _currentUserService = foundUser;
                     Console.WriteLine("✅ Successfully logged in. Press any key to continue...");
                 }
                 else
@@ -160,7 +160,7 @@ namespace HospitalManagmentSystem
                 Console.Write("Choose a password: ");
                 string password = Console.ReadLine();
 
-                User newUser = new User
+                User newUserService = new User
                 {
                     name = username,
                     email = email,
@@ -169,7 +169,7 @@ namespace HospitalManagmentSystem
                     role = RolePanel.Patient
                 };
 
-                users.Add(newUser);
+                users.Add(newUserService);
 
                 try
                 {
@@ -287,7 +287,7 @@ namespace HospitalManagmentSystem
             try
             {
                 Console.Clear();
-                if (currentUser.role != RolePanel.Admin)
+                if (_currentUserService.role != RolePanel.Admin)
                 {
                     Console.WriteLine("Only Admin can access this.");
                     Console.ReadKey();
@@ -470,14 +470,14 @@ namespace HospitalManagmentSystem
 
         static void DoctorPanel()
         {
-            if (currentUser.role == RolePanel.Patient)
+            if (_currentUserService.role == RolePanel.Patient)
             {
                 Console.WriteLine("You can not access this panel.");
                 Console.ReadKey();
                 return;
             }
 
-            if (currentUser.role == RolePanel.Doctor)
+            if (_currentUserService.role == RolePanel.Doctor)
             {
                 bool exit = false;
                 while (!exit)
@@ -525,7 +525,7 @@ namespace HospitalManagmentSystem
         {
             Doctor currentDoctor = null;
 
-            if (currentUser is Doctor doc)
+            if (_currentUserService is Doctor doc)
             {
                 currentDoctor = doc;
             }
@@ -533,7 +533,7 @@ namespace HospitalManagmentSystem
             {
                 currentDoctor = departments
                     .SelectMany(d => d.doctors)
-                    .FirstOrDefault(d => d.name.Equals(currentUser.name, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(d => d.name.Equals(_currentUserService.name, StringComparison.OrdinalIgnoreCase));
             }
 
             if (currentDoctor == null)
@@ -553,7 +553,7 @@ namespace HospitalManagmentSystem
         public static void Managework()
         {
             Doctor currentDoctor =
-                departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == currentUser.name);
+                departments.SelectMany(d => d.doctors).FirstOrDefault(d => d.name == _currentUserService.name);
             currentDoctor.ManageWork();
             DataStorage.SaveData(users, departments);
         }
@@ -561,14 +561,14 @@ namespace HospitalManagmentSystem
         public static void ShowReservs()
         {
 
-            if (currentUser is Doctor doctor)
+            if (_currentUserService is Doctor doctor)
             {
                 doctor.ShowReservations();
             }
             else
             {
                 Doctor currentDoctor = departments.SelectMany(d => d.doctors)
-                    .FirstOrDefault(d => d.name.ToLower() == currentUser.name.ToLower());
+                    .FirstOrDefault(d => d.name.ToLower() == _currentUserService.name.ToLower());
 
                 if (currentDoctor == null)
                 {

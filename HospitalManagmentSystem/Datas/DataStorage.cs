@@ -1,3 +1,5 @@
+using HospitalManagmentSystem.Interfaces;
+
 public class DataStorage
 {
     public static string FilePath = "/Users/apple/RiderProjects/HospitalManagmentSystem/HospitalManagmentSystem/Datas/data.json";

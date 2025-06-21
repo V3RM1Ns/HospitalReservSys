@@ -7,4 +7,20 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Models\Admin.cs">
+        <DependentUpon>User.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Models\Doctor.cs">
+        <DependentUpon>User.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Interfaces\IDoctorService.cs">
+        <DependentUpon>IUserService.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

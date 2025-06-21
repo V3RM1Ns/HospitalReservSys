@@ -2,65 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using HospitalManagmentSystem.Enums;
+using HospitalManagmentSystem.Interfaces;
 
-public class Doctor : User
+public class Doctor : User,IDoctorService
 {
     public int experience { get; set; }
     public List<ReservationResult<DateTime, bool>> reservations { get; set; } = new();
-
-    public Doctor()
+    
+    
+    public void ShowProfile()
     {
-        role = RolePanel.Doctor;
+        Console.WriteLine($"👨‍⚕️ Name: {name}\n📧 Email: {email}\n📞 Phone: {phoneNumber}\n💼 Experience: {experience} years");
     }
 
-    public void ShowReservations()
+    public void ShowPatientDetails(User user)
     {
-        if (reservations == null || reservations.Count == 0)
-        {
-            Console.WriteLine("⛔ No reservations yet.");
-            return;
-        }
-
-        int i = 1;
-        foreach (var reservation in reservations)
-        {
-            string status = reservation.IsApproved ? "✅ Accepted" : "⏳ Pending";
-            Console.WriteLine($"{i++}. Date: {reservation.ReservationDate:dd.MM.yyyy HH:mm} - Status: {status}");
-        }
-    }
-
-    public void ManageWork()
-    {
-        while (true)
-        {
-            Console.Write("🕒 Enter work date and time (format: yyyy-MM-dd HH:mm) or type 'B' to go back: ");
-            string input = Console.ReadLine();
-
-            if (input.Trim().ToUpper() == "B")
-                break;
-
-            try
-            {
-                DateTime workTime = DateTime.ParseExact(input, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
-
-                reservations.Add(new ReservationResult<DateTime, bool>
-                {
-                    ReservationDate = workTime,
-                    IsApproved = false
-                });
-
-                Console.WriteLine("✅ Work time added successfully.");
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("❌ Invalid format. Please use exactly: yyyy-MM-dd HH:mm");
-            }
-
-            Console.Write("➕ Add another time? (Y/N): ");
-            string again = Console.ReadLine();
-            if (again.Trim().ToUpper() != "Y")
-                break;
-        }
+        user.ShowProfile();
     }
 
     public void AcceptReservation(List<User> users, List<Department> departments)
@@ -97,9 +54,67 @@ public class Doctor : User
         Console.WriteLine("✅ Reservation accepted and saved to database.");
     }
 
+    public void ManageWorkTime()
+    {
+        while (true)
+        {
+            Console.Write("🕒 Enter work date and time (format: yyyy-MM-dd HH:mm) or type 'B' to go back: ");
+            string input = Console.ReadLine();
+
+            if (input.Trim().ToUpper() == "B")
+                break;
+
+            try
+            {
+                DateTime workTime = DateTime.ParseExact(input, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+
+                reservations.Add(new ReservationResult<DateTime, bool>
+                {
+                    ReservationDate = workTime,
+                    IsApproved = false
+                });
+
+                Console.WriteLine("✅ Work time added successfully.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("❌ Invalid format. Please use exactly: yyyy-MM-dd HH:mm");
+            }
+
+            Console.Write("➕ Add another time? (Y/N): ");
+            string again = Console.ReadLine();
+            if (again.Trim().ToUpper() != "Y")
+                break;
+        }
+    }
+
+    public void ShowCurrentReservations()
+    {
+        if (reservations == null || reservations.Count == 0)
+        {
+            Console.WriteLine("⛔ No reservations yet.");
+            return;
+        }
+
+        int i = 1;
+        foreach (var reservation in reservations)
+        {
+            string status = reservation.IsApproved ? "✅ Accepted" : "⏳ Pending";
+            Console.WriteLine($"{i++}. Date: {reservation.ReservationDate:dd.MM.yyyy HH:mm} - Status: {status}");
+        }
+    }
+
+
     public class ReservationResult<TTime, TStatus>
     {
         public TTime ReservationDate { get; set; }
         public TStatus IsApproved { get; set; }
     }
+    public Doctor()
+    {
+        role = RolePanel.Doctor;
+    }
+
+    
 }
+
